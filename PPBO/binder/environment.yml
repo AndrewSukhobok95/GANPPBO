@@ -1,0 +1,8 @@
+name: ppbo-dsge-env
+dependencies:
+  - python>=3.5
+  - octave
+  - octave_kernel
+  - pip
+  - pip:
+    - -r file:requirements.txt
