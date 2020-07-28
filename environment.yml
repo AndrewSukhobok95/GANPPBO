@@ -1,0 +1,32 @@
+name: ganppbo
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.7
+  - pytorch::pytorch=1.3
+  - pytorch::torchvision
+  - cudatoolkit=10.1
+  - pillow=6.2
+  - ffmpeg
+  - tqdm
+  - scikit-learn
+  - scikit-image
+  - boto3
+  - requests
+  - nltk
+  - pip
+  - numpy==1.18.4
+  - pandas==0.25.3
+  - scipy==1.3.3
+  - arspy==0.4
+  - GPyOpt==1.2.6
+  - matplotlib==3.1.2
+  - ase==3.19.1
+  - notebook
+  - pip:
+    - fbpca
+    - pyopengltk
+
+# conda env update -f environment.yml --prune
