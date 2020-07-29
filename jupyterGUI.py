@@ -1,6 +1,13 @@
 import sys
 import os
-from datetime import datetime
+
+PROJECTDIR = os.getcwd()
+PPBO_DIR = os.path.join(PROJECTDIR, "PPBO")
+GAN_DIR = os.path.join(PROJECTDIR, "ganspace")
+
+sys.path.insert(0, PPBO_DIR)
+sys.path.insert(0, GAN_DIR)
+
 import numpy as np
 import pandas as pd
 from PIL import Image
