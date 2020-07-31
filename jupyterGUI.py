@@ -27,6 +27,8 @@ class GUIses(object):
 
         self.ganpfinder = ganpfinder
 
+        WIDGET_CONTINIOUS_UPDATE = self.ganpfinder.USING_CUDA
+
         self.strength = 0
         self.w = self.ganpfinder.get_init_W()
         init_img = self.ganpfinder.get_init_img()
@@ -41,11 +43,11 @@ class GUIses(object):
 
         self.widget_strength_slider = widgets.IntSlider(min=-20, max=20,
                                                         value=self.strength,
-                                                        continuous_update=False,
+                                                        continuous_update=WIDGET_CONTINIOUS_UPDATE,
                                                         description='strength:')
 
         self.widget_strength_text = widgets.IntText(description="strength:",
-                                                    continuous_update=False)
+                                                    continuous_update=WIDGET_CONTINIOUS_UPDATE)
 
         self.widget_button_incs = widgets.Button(description="slider +10 (both sides)",
                                                  buttin_style="info",

@@ -42,6 +42,8 @@ class GANPfinder(object):
         self.verbose = verbose
         self.verbose_endl = "   "
 
+        self.USING_CUDA = "cuda" in device
+
         self.ACQUISITION_STRATEGY = acquisition_strategy  # PCD EI
         self.ADAPTIVE_INITIALIZATION = adaptive_init
         # self.OPTIMIZE_HYPERPARAMETERS_AFTER_INITIALIZATION = False
