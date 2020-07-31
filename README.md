@@ -1,14 +1,6 @@
 # GANspace + PPBO project
 
-on Pannikki:
-ps aux | grep 12345
-jupyter notebook --no-browser --port=12345
 
-on kosh:
-ssh -L 12345:localhost:12345 -N -f -l sukhoba1 rename
-
-on your computer:
-ssh -L 12345:localhost:12345 -N -f -l sukhoba1 kosh.aalto.fi
 
 ## Set Up
 
