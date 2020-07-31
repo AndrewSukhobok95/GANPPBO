@@ -1,10 +1,18 @@
 # GANspace + PPBO project
 
 
+## Set Up
 
-
+1. Install anaconda or miniconda
+2. Create environment: `conda create -n ganppbo python=3.7`
+3. Activate environment: `conda activate ganppbo`
+4. Install dependencies: `conda env update -f environment.yml --prune`
 
 ## Original project info
+
+Currently, the code of both projects is commited to this repository. 
+Later ganspace is going to be transformed into submodule. 
+PPBO will stay a part of this code since it was changed.
 
 Original repositories:
 - https://github.com/harskish/ganspace
@@ -14,24 +22,8 @@ Origial README files:
 - [GANSpace README file](ganspace/README.md)
 - [PPBO README file](PPBO/README.md)
 
-Changes that were made to original **PPBO** project:
-
-The files below were changed in the same manner:
-
-- `Camphor_Copper/create_111_camphor_func.py`
-- `Camphor_Copper/GUI.py`
-
-This code
-
-```python
-path_from_root_to_files = os.getcwd() + '/Camphor_Copper/'
-```
-
-was replaced with this one:
-
-```python
-path_from_root_to_files = os.getcwd() + '/PPBO/Camphor_Copper/'
-```
+Additional info:
+- [Changes performed to PPBO project](md_files/ppbo_changes.md)
 
 
 
