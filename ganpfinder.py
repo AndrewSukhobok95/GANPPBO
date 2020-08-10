@@ -33,6 +33,7 @@ class GANPfinder(object):
                  ppbo_user_feedback_grid_size: int = 40,   # grid
                  ppbo_EI_EXR_mc_samples: int = 200,        # number of points for the integrals to solve
                  ppbo_EI_EXR_BO_maxiter: int = 30,         # max number of iterations for BO
+                 ppbo_max_iter_fMAP_estimation: int = 500,
                  gan_sample_seed: int = None,
                  gan_sample_zero_w: bool = False,
                  strength_left_bound: float = -30,
@@ -70,6 +71,7 @@ class GANPfinder(object):
             user_feedback_grid_size=ppbo_user_feedback_grid_size,
             EI_EXR_mc_samples=ppbo_EI_EXR_mc_samples,
             EI_EXR_BO_maxiter=ppbo_EI_EXR_BO_maxiter,
+            max_iter_fMAP_estimation=ppbo_max_iter_fMAP_estimation,
             verbose=False)
 
         self.GP_model = GPModel(self.PPBOsettings)

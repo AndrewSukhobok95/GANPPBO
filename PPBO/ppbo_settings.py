@@ -14,7 +14,8 @@ class PPBO_settings:
                  m=20,                           # number of pseudo comparisons for GP fitting
                  verbose=False,
                  EI_EXR_mc_samples=200,          # number of points for the integrals to solve
-                 EI_EXR_BO_maxiter=30):          # max number of iterations for BO
+                 EI_EXR_BO_maxiter=30,
+                 max_iter_fMAP_estimation=500):          # max number of iterations for BO
         
         """
         BASIC SETTINGS
@@ -32,7 +33,7 @@ class PPBO_settings:
         """
         SETTINGS FOR THE OPTIMIZERS 
         """
-        self.max_iter_fMAP_estimation = 500
+        self.max_iter_fMAP_estimation = max_iter_fMAP_estimation
         self.fMAP_optimizer = 'trust-exact'   #scipy optimizer for f_MAP-estimation: trust-krylov or trust-exact
         self.mu_star_finding_trials = 1  #This depends on the noise level. #Good default values is 1.
          
