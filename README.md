@@ -1,10 +1,17 @@
 # GANspace + PPBO project
 
 
-1) Small n components
-2) Boundaries
-3) GP -> GPModel.optimize_theta()
-4) self.max_iter_fMAP_estimation = 5000
+
+### Current Problems
+
+Too tiny modifications after turning off adaptive initialization.
+
+Solutions:
+
+1) Decrease number of components and boundaries
+2) If (1) step doesn't work, use `GPModel.optimize_theta()`
+3) Try to change `max_iter_fMAP_estimation` parameter to 5000 (default is 500) in PPBO settings.
+
 
 
 ## Set Up
