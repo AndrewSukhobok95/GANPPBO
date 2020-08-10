@@ -35,6 +35,8 @@ class GUIses(object):
 
         self.X, self.Xi = self.ganpfinder.get_next_query()
 
+        self.optimize_Theta = False
+
         self.widget_image = widgets.Image(format='png', width=300,
                                           value=self.to_bytes(init_img))
 
@@ -114,6 +116,8 @@ class GUIses(object):
 
     def switch_adaptive_init(self, _):
         self.ganpfinder.switch_adaptive_initialization()
+        if not self.ganpfinder.ADAPTIVE_INITIALIZATION:
+            self.optimize_Theta = True
 
     def increase_slider_range(self, _):
         self.widget_strength_slider.min -= 10
@@ -131,9 +135,9 @@ class GUIses(object):
 
     def next_query(self, _):
         self._updateGP()
-        # optimization part !
-        # if AI just turned off:
-        #     optimize()
+        if self.optimize_Theta:
+            self.ganpfinder.optimizeGP()
+            self.optimize_Theta = False
         self._update_X()
         self._next_query()
         self._update_strength_value(0)

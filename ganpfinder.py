@@ -136,8 +136,8 @@ class GANPfinder(object):
         self.x_star_hist.append(self.GP_model.x_star_)
         self.mu_star_hist.append(self.GP_model.mu_star_)
 
-    # def optimizeGP(self):
-    #     self.GP_model.optimize_theta()
+    def optimizeGP(self):
+        self.GP_model.optimize_theta()
 
     def switch_adaptive_initialization(self):
         if self.ADAPTIVE_INITIALIZATION:
