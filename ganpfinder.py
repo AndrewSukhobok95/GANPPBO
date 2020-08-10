@@ -27,7 +27,7 @@ class GANPfinder(object):
                  device: str = "cpu",
                  n_comp: int = 80,
                  n_comp_in_use: int = None,
-                 acquisition_strategy: str = "PCD",
+                 acquisition_strategy: str = "PCD",        # PCD, EXP, EI
                  adaptive_init: bool = True,
                  ppbo_m: int = 20,                         # number of pseudo comparisons for GP fitting# number of pseudo comparisons for GP fitting
                  ppbo_user_feedback_grid_size: int = 40,   # grid
@@ -133,6 +133,9 @@ class GANPfinder(object):
 
         self.x_star_hist.append(self.GP_model.x_star_)
         self.mu_star_hist.append(self.GP_model.mu_star_)
+
+    # def optimizeGP(self):
+    #     self.GP_model.optimize_theta()
 
     def switch_adaptive_initialization(self):
         if self.ADAPTIVE_INITIALIZATION:

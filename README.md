@@ -1,6 +1,11 @@
 # GANspace + PPBO project
 
 
+1) Small n components
+2) Boundaries
+3) GP -> GPModel.optimize_theta()
+4) self.max_iter_fMAP_estimation = 5000
+
 
 ## Set Up
 

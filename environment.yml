@@ -28,6 +28,6 @@ dependencies:
     - matplotlib==3.1.2
     - ase==3.19.1
     - notebook
-    - ipywidgets
+    - ipywidgets==7.5.1
 
 # conda env update -f environment.yml --prune

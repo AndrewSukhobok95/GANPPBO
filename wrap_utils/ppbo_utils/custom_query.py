@@ -2,6 +2,8 @@ import numpy as np
 
 from wrap_utils.ppbo_utils import ppbo_utils
 
+from sklearn.decomposition import PCA
+
 # class CustomQuery(object):
 #
 #     def __init__(self, n_comp_in_use):

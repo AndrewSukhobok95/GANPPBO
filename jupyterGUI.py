@@ -41,7 +41,8 @@ class GUIses(object):
         self.widget_image_init = widgets.Image(format='png', width=300,
                                                value=self.to_bytes(init_img))
 
-        self.widget_strength_slider = widgets.IntSlider(min=-20, max=20,
+        self.widget_strength_slider = widgets.IntSlider(min=self.ganpfinder.left_bound,
+                                                        max=self.ganpfinder.right_bound,
                                                         value=self.strength,
                                                         continuous_update=WIDGET_CONTINIOUS_UPDATE,
                                                         description='strength:')
@@ -130,6 +131,9 @@ class GUIses(object):
 
     def next_query(self, _):
         self._updateGP()
+        # optimization part !
+        # if AI just turned off:
+        #     optimize()
         self._update_X()
         self._next_query()
         self._update_strength_value(0)
