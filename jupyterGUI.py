@@ -178,7 +178,7 @@ class GUIses(object):
 
     @verbose_info(verbose=VERBOSE, msg="+ Updating preferred image", verbose_endl=VERBOSE_ENDL)
     def _update_pref_image(self):
-        X_star = self.ganpfinder.get_last_X_star()
+        X_star = self.ganpfinder.get_last_X_star_scaled()
         img = self.ganpfinder.update_image(prefVec=X_star)
         self.widget_pref_image.value = self.to_bytes(img)
 

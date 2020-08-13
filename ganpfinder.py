@@ -92,8 +92,10 @@ class GANPfinder(object):
     def get_X_star_history(self):
         return self.x_star_hist
 
-    def get_last_X_star(self):
-        return self.x_star_hist[-1]
+    def get_last_X_star_scaled(self):
+        x_star = self.x_star_hist[-1]
+        x_star_unscaled = self.GP_model.FP.unscale(x_star)
+        return x_star_unscaled
 
     def get_MU_star_history(self):
         return self.mu_star_hist
@@ -180,7 +182,7 @@ if __name__ == "__main__":
     X, Xi = gpf.get_next_query()
 
     print("X Star")
-    gpf.get_last_X_star()
+    gpf.get_last_X_star_scaled()
 
 
 
