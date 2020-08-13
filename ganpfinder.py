@@ -30,7 +30,7 @@ class GANPfinder(object):
                  n_comp_in_use: int = None,
                  acquisition_strategy: str = "PCD",        # PCD, EXP, EI
                  adaptive_init: bool = True,
-                 ppbo_m: int = 20,                         # number of pseudo comparisons for GP fitting# number of pseudo comparisons for GP fitting
+                 ppbo_m: int = 25,                         # number of pseudo comparisons for GP fitting# number of pseudo comparisons for GP fitting
                  ppbo_user_feedback_grid_size: int = 40,   # grid
                  ppbo_EI_EXR_mc_samples: int = 200,        # number of points for the integrals to solve
                  ppbo_EI_EXR_BO_maxiter: int = 30,         # max number of iterations for BO
