@@ -101,13 +101,13 @@ class GANPfinder(object):
         return self.mu_star_hist
 
     def get_next_query(self):
-        nq_unscale = False
         if self.ADAPTIVE_INITIALIZATION:
             xi = self.AQ.next_Xi()
             x = self.AQ.get_X()
             x[xi != 0] = 0
         else:
             if self.verbose: print("BO query sampling", end=self.verbose_endl)
+            nq_unscale = True
             xi, x = next_query(self.PPBOsettings, self.GP_model, unscale=nq_unscale)
         return x, xi
 
