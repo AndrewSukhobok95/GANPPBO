@@ -139,7 +139,7 @@ class GUIses(object):
             print("+++ OPTIMIZING Theta for GP")
             self.ganpfinder.optimizeGP()
             self.optimize_Theta = False
-            print("FINISHED Theta OPTIMIZATION")
+            print("+++ FINISHED Theta OPTIMIZATION")
         self._update_X()
         self._next_query()
         self._update_strength_value(0)
