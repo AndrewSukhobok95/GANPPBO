@@ -1,6 +1,7 @@
 import sys
 import os
 import numpy as np
+import torch
 
 PROJECTDIR = os.getcwd()
 PPBO_DIR = os.path.join(PROJECTDIR, "PPBO")
@@ -91,6 +92,9 @@ class GANPfinder(object):
     def get_X_star_history(self):
         return self.x_star_hist
 
+    def get_last_X_star(self):
+        return self.x_star_hist[-1]
+
     def get_MU_star_history(self):
         return self.mu_star_hist
 
@@ -148,7 +152,35 @@ class GANPfinder(object):
 
 if __name__ == "__main__":
 
-    gf = GANPfinder(n_comp_in_use=5)
+    DEVICE = "cpu"
+    if torch.cuda.is_available():
+        DEVICE = "cuda:0"
+
+    print("Device used:", DEVICE)
+
+    gpf = GANPfinder(class_name="car",
+                     gan_sample_seed=0,
+                     n_comp_in_use=5,
+                     strength_left_bound=-5,
+                     strength_right_bound=5,
+                     ppbo_max_iter_fMAP_estimation=5000,
+                     device=DEVICE)
+
+    print("Next Query")
+    X, Xi = gpf.get_next_query()
+
+    print("Update Image")
+    prefVec = gpf.calculate_pref_vector(X, Xi, alpha=3)
+    img = gpf.update_image(prefVec=prefVec)
+
+    print("Update GP")
+    gpf.updateGP(X, Xi, alpha=3)
+
+    print("Next Query")
+    X, Xi = gpf.get_next_query()
+
+    print("X Star")
+    gpf.get_last_X_star()
 
 
 

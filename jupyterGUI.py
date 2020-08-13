@@ -37,10 +37,15 @@ class GUIses(object):
 
         self.optimize_Theta = False
 
-        self.widget_image = widgets.Image(format='png', width=300,
+        self.WIDGET_WIDTH = 300
+
+        self.widget_image = widgets.Image(format='png', width=self.WIDGET_WIDTH,
                                           value=self.to_bytes(init_img))
 
-        self.widget_image_init = widgets.Image(format='png', width=300,
+        self.widget_pref_image = widgets.Image(format='png', width=self.WIDGET_WIDTH,
+                                               value=self.to_bytes(init_img))
+
+        self.widget_image_init = widgets.Image(format='png', width=self.WIDGET_WIDTH,
                                                value=self.to_bytes(init_img))
 
         self.widget_strength_slider = widgets.IntSlider(min=self.ganpfinder.left_bound,
@@ -102,12 +107,13 @@ class GUIses(object):
 
         image_panel = widgets.VBox([widgets.Label(value='Image:'), self.widget_image])
 
+        pref_image_panel = widgets.VBox([widgets.Label(value='Preferred Image:'), self.widget_pref_image])
+
         init_image_panel = widgets.VBox([widgets.Label(value='Initial Image:'), self.widget_image_init])
 
-        run_wid = widgets.HBox([
-            manage_panel,
-            image_panel,
-            init_image_panel
+        run_wid = widgets.VBox([
+            widgets.HBox([image_panel, pref_image_panel, init_image_panel]),
+            manage_panel
         ])
 
         return run_wid
@@ -135,6 +141,7 @@ class GUIses(object):
 
     def next_query(self, _):
         self._updateGP()
+        self._update_pref_image()
         if self.optimize_Theta:
             print("+++ OPTIMIZING Theta for GP")
             self.ganpfinder.optimizeGP()
@@ -167,6 +174,13 @@ class GUIses(object):
         prefVec = self.ganpfinder.calculate_pref_vector(self.X, self.Xi, self.strength)
         img = self.ganpfinder.update_image(prefVec=prefVec)
         self.widget_image.value = self.to_bytes(img)
+
+
+    @verbose_info(verbose=VERBOSE, msg="+ Updating preferred image", verbose_endl=VERBOSE_ENDL)
+    def _update_pref_image(self):
+        X_star = self.ganpfinder.get_last_X_star()
+        img = self.ganpfinder.update_image(prefVec=X_star)
+        self.widget_pref_image.value = self.to_bytes(img)
 
 
     def _update_strength_slider_value(self):
