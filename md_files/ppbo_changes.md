@@ -5,14 +5,24 @@ The files below were changed in the same manner:
 - `Camphor_Copper/create_111_camphor_func.py`
 - `Camphor_Copper/GUI.py`
 
-This code
+From:
 
 ```python
 path_from_root_to_files = os.getcwd() + '/Camphor_Copper/'
 ```
 
-was replaced with this one:
+To:
 
 ```python
 path_from_root_to_files = os.getcwd() + '/PPBO/Camphor_Copper/'
 ```
+
+Other changes:
+
+- `ppbo_settings.py`
+    - `max_iter_fMAP_estimation` added as a parameter to `__init__` of `PPBO_settings` class
+
+
+
+
+

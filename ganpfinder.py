@@ -109,6 +109,7 @@ class GANPfinder(object):
             if self.verbose: print("BO query sampling", end=self.verbose_endl)
             nq_unscale = True
             xi, x = next_query(self.PPBOsettings, self.GP_model, unscale=nq_unscale)
+        xi = np.abs(xi) / np.max(np.abs(xi))
         return x, xi
 
     def calculate_pref_vector(self,
