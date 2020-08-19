@@ -6,7 +6,7 @@ import os
 import sys
 
 PROJECTDIR = os.getcwd()
-GAN_DIR = os.path.join(PROJECTDIR, "ganspace")
+GAN_DIR = os.path.join(PROJECTDIR, "../ganspace")
 sys.path.insert(0, GAN_DIR)
 
 from ganspace.config import Config

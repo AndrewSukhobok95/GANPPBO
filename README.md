@@ -13,6 +13,11 @@ Solutions:
 3) Try to change `max_iter_fMAP_estimation` parameter to 5000 (default is 500) in PPBO settings.
 
 
+## Idea
+
+![original projects](md_files_and_imgs/ganspace_and_ppbo.png)
+
+![original projects](md_files_and_imgs/ganppbo.png)
 
 ## Set Up
 
@@ -37,7 +42,7 @@ Origial README files:
 - [PPBO README file](PPBO/README.md)
 
 Additional info:
-- [Changes performed to PPBO project](md_files/ppbo_changes.md)
+- [Changes performed to PPBO project](md_files_and_imgs/ppbo_changes.md)
 
 
 

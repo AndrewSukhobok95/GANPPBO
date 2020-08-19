@@ -3,8 +3,8 @@ import os
 import numpy as np
 
 PROJECTDIR = os.getcwd()
-PPBO_DIR = os.path.join(PROJECTDIR, "PPBO")
-GAN_DIR = os.path.join(PROJECTDIR, "ganspace")
+PPBO_DIR = os.path.join(PROJECTDIR, "../PPBO")
+GAN_DIR = os.path.join(PROJECTDIR, "../ganspace")
 
 sys.path.insert(0, PPBO_DIR)
 sys.path.insert(0, GAN_DIR)

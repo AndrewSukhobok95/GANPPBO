@@ -10,12 +10,10 @@ sys.path.insert(0, GAN_DIR)
 
 import numpy as np
 import pandas as pd
-from PIL import Image
 
 import ipywidgets as widgets
-from io import BytesIO
 
-from jupGUI_utils.utils import verbose_info
+from jupGUI_utils.utils import verbose_info, widget_image_to_bytes
 
 VERBOSE = True
 VERBOSE_ENDL = "\t   "
@@ -24,10 +22,12 @@ VERBOSE_ENDL = "\t   "
 class GUIses(object):
     def __init__(self, ganpfinder, start_with_init_img=False):
         self.start_with_init_img = start_with_init_img
+        self.optimize_Theta = False
 
         self.ganpfinder = ganpfinder
 
         WIDGET_CONTINIOUS_UPDATE = self.ganpfinder.USING_CUDA
+        WIDGET_WIDTH = 300
 
         self.strength = 0
         self.w = self.ganpfinder.get_init_W()
@@ -35,17 +35,13 @@ class GUIses(object):
 
         self.X, self.Xi = self.ganpfinder.get_next_query()
 
-        self.optimize_Theta = False
-
-        self.WIDGET_WIDTH = 300
-
-        self.widget_image = widgets.Image(format='png', width=self.WIDGET_WIDTH,
+        self.widget_image = widgets.Image(format='png', width=WIDGET_WIDTH,
                                           value=self.to_bytes(init_img))
 
-        self.widget_pref_image = widgets.Image(format='png', width=self.WIDGET_WIDTH,
+        self.widget_pref_image = widgets.Image(format='png', width=WIDGET_WIDTH,
                                                value=self.to_bytes(init_img))
 
-        self.widget_image_init = widgets.Image(format='png', width=self.WIDGET_WIDTH,
+        self.widget_image_init = widgets.Image(format='png', width=WIDGET_WIDTH,
                                                value=self.to_bytes(init_img))
 
         self.widget_strength_slider = widgets.IntSlider(min=self.ganpfinder.left_bound,
@@ -195,10 +191,7 @@ class GUIses(object):
 
     @staticmethod
     def to_bytes(img):
-        image = Image.fromarray((img * 255).astype(np.uint8), mode='RGB')
-        f = BytesIO()
-        image.save(f, 'png')
-        return f.getvalue()
+        return widget_image_to_bytes(img)
 
 
 

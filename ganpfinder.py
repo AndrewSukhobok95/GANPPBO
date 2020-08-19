@@ -30,11 +30,12 @@ class GANPfinder(object):
                  n_comp_in_use: int = None,
                  acquisition_strategy: str = "PCD",        # PCD, EXP, EI
                  adaptive_init: bool = True,
+                 adaptive_components: list = None,
                  ppbo_m: int = 25,                         # number of pseudo comparisons for GP fitting# number of pseudo comparisons for GP fitting
                  ppbo_user_feedback_grid_size: int = 40,   # grid
                  ppbo_EI_EXR_mc_samples: int = 200,        # number of points for the integrals to solve
                  ppbo_EI_EXR_BO_maxiter: int = 30,         # max number of iterations for BO
-                 ppbo_max_iter_fMAP_estimation: int = 500,
+                 ppbo_max_iter_fMAP_estimation: int = 5000,
                  gan_sample_seed: int = None,
                  gan_sample_zero_w: bool = False,
                  strength_left_bound: float = -30,
@@ -78,7 +79,8 @@ class GANPfinder(object):
         self.GP_model = GPModel(self.PPBOsettings)
 
         self.fs_ses = FeedbackStore(D=self.N_comp_in_use)
-        self.AQ = AdaptiveQuery(self.N_comp_in_use)
+        self.AQ = AdaptiveQuery(n_comp_in_use=self.N_comp_in_use,
+                                components_to_query=adaptive_components)
 
         self.x_star_hist = []
         self.mu_star_hist = []
