@@ -11,7 +11,6 @@ sys.path.insert(0, GAN_DIR)
 import numpy as np
 import pandas as pd
 import ipywidgets as widgets
-import bqplot as bq
 
 from jupGUI_utils.utils import widget_image_to_bytes
 
