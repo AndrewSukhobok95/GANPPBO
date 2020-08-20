@@ -86,21 +86,19 @@ class GUICompExprSes():
     def next_component(self, _):
         if self.component < self.max_component:
             self.component += 1
-            self.widget_button_next_comp.value = self.component
+            self.widget_comp_slider.value = self.component
             self.Xi[self.component] = 1
             self.widget_strength_slider.value = 0
             self.strength = 0
-            self.widget_comp_slider.value += 1
             self._update_image()
 
     def previous_component(self, _):
         if self.component > self.min_component:
             self.component -= 1
-            self.widget_button_prev_comp.value = self.component
+            self.widget_comp_slider.value = self.component
             self.Xi[self.component] = 1
             self.widget_strength_slider.value = 0
             self.strength = 0
-            self.widget_comp_slider.value -= 1
             self._update_image()
 
     def _update_image(self):
