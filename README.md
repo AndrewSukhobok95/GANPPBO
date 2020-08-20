@@ -2,20 +2,17 @@
 
 
 
-### Current Problems
-
-Too tiny modifications after turning off adaptive initialization.
-
-Solutions:
-
-1) Decrease number of components and boundaries
-2) If (1) step doesn't work, use `GPModel.optimize_theta()`
-3) Try to change `max_iter_fMAP_estimation` parameter to 5000 (default is 500) in PPBO settings.
-
-
 ## Idea
 
+Probabilistic Interactive User Model for Interactive AI
+
+Based on 2 projects:
+- GANSpace
+- Projective Preferential Bayesian Optimization (PPBO)
+
 ![original projects](md_files_and_imgs/ganspace_and_ppbo.png)
+
+Idea Formulation: Adjust image generation model (GAN) to follow user’s preferences using Bayesian Optimization.
 
 ![original projects](md_files_and_imgs/ganppbo.png)
 

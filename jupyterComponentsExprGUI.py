@@ -83,7 +83,7 @@ class GUICompExprSes():
         self.strength = 0
         self._update_image()
 
-    def next_component(self):
+    def next_component(self, _):
         if self.component < self.max_component:
             self.component += 1
             self.widget_button_next_comp.value = self.component
@@ -92,7 +92,7 @@ class GUICompExprSes():
             self.strength = 0
             self._update_image()
 
-    def previous_component(self):
+    def previous_component(self, _):
         if self.component > self.min_component:
             self.component -= 1
             self.widget_button_prev_comp.value = self.component
