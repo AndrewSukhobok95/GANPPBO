@@ -90,6 +90,7 @@ class GUICompExprSes():
             self.Xi[self.component] = 1
             self.widget_strength_slider.value = 0
             self.strength = 0
+            self.widget_comp_slider.value += 1
             self._update_image()
 
     def previous_component(self, _):
@@ -99,6 +100,7 @@ class GUICompExprSes():
             self.Xi[self.component] = 1
             self.widget_strength_slider.value = 0
             self.strength = 0
+            self.widget_comp_slider.value -= 1
             self._update_image()
 
     def _update_image(self):
