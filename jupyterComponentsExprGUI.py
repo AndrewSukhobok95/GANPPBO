@@ -11,6 +11,7 @@ sys.path.insert(0, GAN_DIR)
 import numpy as np
 import pandas as pd
 import ipywidgets as widgets
+import bqplot as bq
 
 from jupGUI_utils.utils import widget_image_to_bytes
 
@@ -78,7 +79,7 @@ class GUICompExprSes():
 
     def change_component(self, component):
         self.component = component.new
-        self.Xi[self.component] = 1
+        self._update_Xi()
         self.widget_strength_slider.value = 0
         self.strength = 0
         self._update_image()
@@ -87,7 +88,7 @@ class GUICompExprSes():
         if self.component < self.max_component:
             self.component += 1
             self.widget_comp_slider.value = self.component
-            self.Xi[self.component] = 1
+            self._update_Xi()
             self.widget_strength_slider.value = 0
             self.strength = 0
             self._update_image()
@@ -96,7 +97,7 @@ class GUICompExprSes():
         if self.component > self.min_component:
             self.component -= 1
             self.widget_comp_slider.value = self.component
-            self.Xi[self.component] = 1
+            self._update_Xi()
             self.widget_strength_slider.value = 0
             self.strength = 0
             self._update_image()
@@ -105,6 +106,10 @@ class GUICompExprSes():
         prefVec = self.ganpfinder.calculate_pref_vector(self.X, self.Xi, self.strength)
         img = self.ganpfinder.update_image(prefVec=prefVec)
         self.widget_image.value = self.to_bytes(img)
+
+    def _update_Xi(self):
+        self.Xi = np.zeros(self.ganpfinder.N_comp_in_use)
+        self.Xi[self.component] = 1
 
     @staticmethod
     def to_bytes(img):
