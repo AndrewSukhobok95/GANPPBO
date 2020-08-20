@@ -28,9 +28,9 @@ class GANPfinder(object):
                  device: str = "cpu",
                  n_comp: int = 80,
                  n_comp_in_use: int = None,
-                 acquisition_strategy: str = "PCD",        # PCD, EXP, EI
                  adaptive_init: bool = True,
                  adaptive_components: list = None,
+                 acquisition_strategy: str = "PCD",        # PCD, EXP, EI
                  ppbo_m: int = 25,                         # number of pseudo comparisons for GP fitting# number of pseudo comparisons for GP fitting
                  ppbo_user_feedback_grid_size: int = 40,   # grid
                  ppbo_EI_EXR_mc_samples: int = 200,        # number of points for the integrals to solve
