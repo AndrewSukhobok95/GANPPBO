@@ -23,7 +23,7 @@ Based on 2 projects:
 
 ![original projects](md_files_and_imgs/ganspace_and_ppbo.png)
 
-Idea Formulation: Adjust image generation model (GAN) to follow user’s preferences using Bayesian Optimization.
+**Idea Formulation:** Adjust image generation model (GAN) to follow user’s preferences using Bayesian Optimization.
 
 ![original projects](md_files_and_imgs/ganppbo.png)
 
