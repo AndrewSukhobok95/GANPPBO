@@ -20,7 +20,7 @@ from wrap_utils.gan_utils.gan_wrapper import GANSpaceModel
 from wrap_utils.ppbo_utils import ppbo_utils
 
 
-class GANPfinder(object):
+class GANPrefFinder(object):
     def __init__(self,
                  model_name: str = 'StyleGAN2',
                  class_name: str = 'ffhq',
@@ -120,8 +120,12 @@ class GANPfinder(object):
                               alpha: float):
         return x + xi * alpha
 
-    def update_image(self, prefVec: np.array):
-        w, img = self.GANsm.modify_image_by_prefVec(w=self.init_W, prefVec=prefVec)
+    def update_image(self,
+                     prefVec: np.array,
+                     layers_range: tuple = None):
+        w, img = self.GANsm.modify_image_by_prefVec(w=self.init_W,
+                                                    prefVec=prefVec,
+                                                    layers_range=layers_range)
         return img
 
     def update_adaptive_query(self,
@@ -163,13 +167,13 @@ if __name__ == "__main__":
 
     print("Device used:", DEVICE)
 
-    gpf = GANPfinder(class_name="car",
-                     gan_sample_seed=0,
-                     n_comp_in_use=5,
-                     strength_left_bound=-5,
-                     strength_right_bound=5,
-                     ppbo_max_iter_fMAP_estimation=5000,
-                     device=DEVICE)
+    gpf = GANPrefFinder(class_name="car",
+                        gan_sample_seed=0,
+                        n_comp_in_use=5,
+                        strength_left_bound=-5,
+                        strength_right_bound=5,
+                        ppbo_max_iter_fMAP_estimation=5000,
+                        device=DEVICE)
 
     print("Next Query")
     X, Xi = gpf.get_next_query()

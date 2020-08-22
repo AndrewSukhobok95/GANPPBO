@@ -20,11 +20,22 @@ VERBOSE_ENDL = "\t   "
 
 
 class GUIses(object):
-    def __init__(self, ganpfinder, start_with_init_img=False):
-        self.start_with_init_img = start_with_init_img
+    def __init__(self,
+                 ganpfinder,
+                 comp_layers_dict: dict = None):
+        """
+        :param ganpfinder: GANPrefFinder class instance
+        :param comp_layers_dict: dictionary of the following view
+            {
+                0: (5,8),
+                2: (13,16),
+                ....
+            }
+        """
         self.optimize_Theta = False
 
         self.ganpfinder = ganpfinder
+        self.comp_layers_dict = comp_layers_dict
 
         WIDGET_CONTINIOUS_UPDATE = self.ganpfinder.USING_CUDA
         WIDGET_WIDTH = 300
@@ -155,22 +166,26 @@ class GUIses(object):
     def _updateGP(self):
         self.ganpfinder.updateGP(self.X, self.Xi, self.strength)
 
-
     @verbose_info(verbose=VERBOSE, msg="+ Getting next query", verbose_endl=VERBOSE_ENDL)
     def _next_query(self):
         self.X, self.Xi = self.ganpfinder.get_next_query()
 
-
     def _update_X(self):
         self.ganpfinder.update_adaptive_query(self.X, self.Xi, self.strength)
-
 
     @verbose_info(verbose=VERBOSE, msg="+ Updating image", verbose_endl=VERBOSE_ENDL)
     def _update_image(self):
         prefVec = self.ganpfinder.calculate_pref_vector(self.X, self.Xi, self.strength)
-        img = self.ganpfinder.update_image(prefVec=prefVec)
+        layers_range = self._get_comp_layers_range()
+        img = self.ganpfinder.update_image(prefVec=prefVec, layers_range=layers_range)
         self.widget_image.value = self.to_bytes(img)
 
+    def _get_comp_layers_range(self):
+        layers_range = None
+        if (self.comp_layers_dict is not None) & (self.ganpfinder.ADAPTIVE_INITIALIZATION):
+            current_component_num = np.argmax(self.Xi)
+            layers_range = self.comp_layers_dict.get(current_component_num)
+        return layers_range
 
     @verbose_info(verbose=VERBOSE, msg="+ Updating preferred image", verbose_endl=VERBOSE_ENDL)
     def _update_pref_image(self):
@@ -178,10 +193,8 @@ class GUIses(object):
         img = self.ganpfinder.update_image(prefVec=X_star)
         self.widget_pref_image.value = self.to_bytes(img)
 
-
     def _update_strength_slider_value(self):
         self.widget_strength_slider.value = self.strength
-
 
     @verbose_info(verbose=VERBOSE, msg="+ Updating strength parameter", verbose_endl=VERBOSE_ENDL)
     def _update_strength_value(self, new_value):
@@ -192,14 +205,6 @@ class GUIses(object):
     @staticmethod
     def to_bytes(img):
         return widget_image_to_bytes(img)
-
-
-
-
-
-
-
-
 
     # === next query ===
 

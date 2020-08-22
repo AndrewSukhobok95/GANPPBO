@@ -20,7 +20,7 @@ from ganspace.decomposition import get_or_compute
 class GANSpaceModel(object):
     def __init__(self,
                  model_name: str = 'StyleGAN2',
-                 class_name: str = 'ffhq',
+                 class_name: str = 'car',
                  layer_name: str = 'style',
                  device: str = "cpu",
                  n_comp: int = 80,
@@ -58,7 +58,7 @@ class GANSpaceModel(object):
             self.lat_mean = data['lat_mean']
             self.lat_std = data['lat_stdev']
 
-        if comp_range[1] is None:
+        if comp_range is None:
             comp_range = (0, self.n_comp)
         else:
             if comp_range[0] < 0:
@@ -95,13 +95,21 @@ class GANSpaceModel(object):
         img = self.gan_model.sample_np(w_list)
         return w, img
 
-    def modVec(self, prefVec: np.array):
+    def _weighted_latent_modification(self, prefVec: np.array):
         lat_modification = np.matmul(prefVec, self.V, dtype=np.dtype("float32"))
         return lat_modification
 
-    def modify_image_by_prefVec(self, w: np.array, prefVec: np.array):
-        lat_modification = self.modVec(prefVec)
-        w_list = [w + lat_modification] * self.n_layers
+    def modify_image_by_prefVec(self,
+                                w: np.array,
+                                prefVec: np.array,
+                                layers_range: tuple = None):
+        lat_modification = self._weighted_latent_modification(prefVec)
+        if layers_range is None:
+            w_list = [w + lat_modification] * self.n_layers
+        else:
+            w_list = [w] * self.n_layers
+            for l in range(layers_range[0], layers_range[1]+1):
+                w_list[l] = w_list[l] + lat_modification
         img = self.gan_model.sample_np(w_list)
         return w, img
 
@@ -109,3 +117,5 @@ class GANSpaceModel(object):
 if __name__ == "__main__":
 
     g = GANSpaceModel()
+
+    g.modify_image_by_prefVec(np.array([]), np.array([]))
