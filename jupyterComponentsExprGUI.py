@@ -17,27 +17,27 @@ from jupGUI_utils.utils import widget_image_to_bytes
 
 class GUICompExprSes():
     def __init__(self, ganpfinder):
-        self.ganpfinder = ganpfinder
+        self.GANpf = ganpfinder
 
-        WIDGET_CONTINIOUS_UPDATE = self.ganpfinder.USING_CUDA
+        WIDGET_CONTINIOUS_UPDATE = self.GANpf.USING_CUDA
         WIDGET_WIDTH = 300
 
         self.strength = 0
         self.component = 0
         self.min_component = 0
-        self.max_component = self.ganpfinder.N_comp_in_use - 1
-        self.w = self.ganpfinder.get_init_W()
-        init_img = self.ganpfinder.get_init_img()
+        self.max_component = self.GANpf.N_comp_in_use - 1
+        self.w = self.GANpf.get_init_W()
+        init_img = self.GANpf.get_init_img()
 
-        self.X = np.zeros(self.ganpfinder.N_comp_in_use)
-        self.Xi = np.zeros(self.ganpfinder.N_comp_in_use)
+        self.X = np.zeros(self.GANpf.N_comp_in_use)
+        self.Xi = np.zeros(self.GANpf.N_comp_in_use)
         self.Xi[self.component] = 1
 
         self.widget_image = widgets.Image(format='png', width=WIDGET_WIDTH,
                                           value=self.to_bytes(init_img))
 
-        self.widget_strength_slider = widgets.IntSlider(min=self.ganpfinder.left_bound,
-                                                        max=self.ganpfinder.right_bound,
+        self.widget_strength_slider = widgets.IntSlider(min=self.GANpf.left_bound,
+                                                        max=self.GANpf.right_bound,
                                                         value=self.strength,
                                                         continuous_update=WIDGET_CONTINIOUS_UPDATE,
                                                         description='strength:')
@@ -102,12 +102,13 @@ class GUICompExprSes():
             self._update_image()
 
     def _update_image(self):
-        prefVec = self.ganpfinder.calculate_pref_vector(self.X, self.Xi, self.strength)
-        img = self.ganpfinder.update_image(prefVec=prefVec)
+        prefVec = self.GANpf.calculate_pref_vector(self.X, self.Xi, self.strength)
+        layers_range = self.GANpf.get_comp_layers_range(self.Xi)
+        img = self.GANpf.update_image(prefVec=prefVec, layers_range=layers_range)
         self.widget_image.value = self.to_bytes(img)
 
     def _update_Xi(self):
-        self.Xi = np.zeros(self.ganpfinder.N_comp_in_use)
+        self.Xi = np.zeros(self.GANpf.N_comp_in_use)
         self.Xi[self.component] = 1
 
     @staticmethod
