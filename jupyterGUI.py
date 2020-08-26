@@ -15,7 +15,7 @@ import ipywidgets as widgets
 
 from jupGUI_utils.utils import verbose_info, widget_image_to_bytes
 
-VERBOSE = True
+VERBOSE = False
 VERBOSE_ENDL = "\t   "
 
 
