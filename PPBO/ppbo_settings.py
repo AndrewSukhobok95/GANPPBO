@@ -15,7 +15,8 @@ class PPBO_settings:
                  verbose=False,
                  EI_EXR_mc_samples=200,          # number of points for the integrals to solve
                  EI_EXR_BO_maxiter=30,
-                 max_iter_fMAP_estimation=500):          # max number of iterations for BO
+                 max_iter_fMAP_estimation=500,   # max number of iterations for BO
+                 mu_star_finding_trials=1):
         
         """
         BASIC SETTINGS
@@ -31,11 +32,11 @@ class PPBO_settings:
         self.original_bounds = bounds   #((xmin,xmax),)*self.D #Boundaries of each variables as a sequence of tuplets
         
         """
-        SETTINGS FOR THE OPTIMIZERS 
+        SETTINGS FOR THE OPTIMIZERS
         """
         self.max_iter_fMAP_estimation = max_iter_fMAP_estimation
         self.fMAP_optimizer = 'trust-exact'   #scipy optimizer for f_MAP-estimation: trust-krylov or trust-exact
-        self.mu_star_finding_trials = 1  #This depends on the noise level. #Good default values is 1.
+        self.mu_star_finding_trials = mu_star_finding_trials  #This depends on the noise level. #Good default values is 1.
          
         '''HYPERPARAMETER INITIAL VALUES'''
         self.theta_initial = theta_initial #Intial hyperparameters. Put None if you want keep default hyper-parameters.

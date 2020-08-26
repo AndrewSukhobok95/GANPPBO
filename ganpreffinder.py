@@ -28,19 +28,48 @@ class GANPrefFinder(object):
                  device: str = "cpu",
                  n_comp: int = 80,
                  n_comp_in_use: int = None,
+                 comp_layers_dict: dict = None,
                  adaptive_init: bool = True,
                  adaptive_components: list = None,
-                 acquisition_strategy: str = "PCD",        # PCD, EXP, EI
-                 ppbo_m: int = 25,                         # number of pseudo comparisons for GP fitting# number of pseudo comparisons for GP fitting
-                 ppbo_user_feedback_grid_size: int = 40,   # grid
-                 ppbo_EI_EXR_mc_samples: int = 200,        # number of points for the integrals to solve
-                 ppbo_EI_EXR_BO_maxiter: int = 30,         # max number of iterations for BO
+                 acquisition_strategy: str = "PCD",          # PCD, EXP, EI
+                 ppbo_m: int = 25,                           # number of pseudo comparisons for GP fitting# number of pseudo comparisons for GP fitting
+                 ppbo_user_feedback_grid_size: int = 40,     # grid
+                 ppbo_EI_EXR_mc_samples: int = 200,          # number of points for the integrals to solve
+                 ppbo_EI_EXR_BO_maxiter: int = 30,           # max number of iterations for BO
                  ppbo_max_iter_fMAP_estimation: int = 5000,
+                 ppbo_mu_star_finding_trials: int = 4,
                  gan_sample_seed: int = None,
                  gan_sample_zero_w: bool = False,
                  strength_left_bound: float = -30,
                  strength_right_bound: float = 30,
                  verbose: bool = True):
+        """
+        :param model_name:
+        :param class_name:
+        :param layer_name:
+        :param device:
+        :param n_comp:
+        :param n_comp_in_use:
+        :param comp_layers_dict: dictionary of the following view
+            {
+                0: (5,8),
+                2: (13,16),
+                ....
+            }
+        :param adaptive_init:
+        :param adaptive_components:
+        :param acquisition_strategy:
+        :param ppbo_m:
+        :param ppbo_user_feedback_grid_size:
+        :param ppbo_EI_EXR_mc_samples:
+        :param ppbo_EI_EXR_BO_maxiter:
+        :param ppbo_max_iter_fMAP_estimation:
+        :param gan_sample_seed:
+        :param gan_sample_zero_w:
+        :param strength_left_bound:
+        :param strength_right_bound:
+        :param verbose:
+        """
 
         self.verbose = verbose
         self.verbose_endl = "   "
@@ -52,6 +81,8 @@ class GANPrefFinder(object):
         # self.OPTIMIZE_HYPERPARAMETERS_AFTER_INITIALIZATION = False
         # self.OPTIMIZE_HYPERPARAMETERS_AFTER_EACH_ITERATION = False
         # self.OPTIMIZE_HYPERPARAMETERS_AFTER_ACTUAL_QUERY_NUMBER = 1000
+
+        self.comp_layers_dict = comp_layers_dict
 
         if n_comp_in_use is None:
             self.N_comp_in_use = n_comp
@@ -74,6 +105,7 @@ class GANPrefFinder(object):
             EI_EXR_mc_samples=ppbo_EI_EXR_mc_samples,
             EI_EXR_BO_maxiter=ppbo_EI_EXR_BO_maxiter,
             max_iter_fMAP_estimation=ppbo_max_iter_fMAP_estimation,
+            mu_star_finding_trials=ppbo_mu_star_finding_trials,
             verbose=False)
 
         self.GP_model = GPModel(self.PPBOsettings)
@@ -119,6 +151,13 @@ class GANPrefFinder(object):
                               xi: np.array,
                               alpha: float):
         return x + xi * alpha
+
+    def get_comp_layers_range(self, xi: np.array):
+        layers_range = None
+        if (self.comp_layers_dict is not None) & (self.ADAPTIVE_INITIALIZATION):
+            current_component_num = np.argmax(xi)
+            layers_range = self.comp_layers_dict.get(current_component_num)
+        return layers_range
 
     def update_image(self,
                      prefVec: np.array,
@@ -190,7 +229,3 @@ if __name__ == "__main__":
 
     print("X Star")
     gpf.get_last_X_star_scaled()
-
-
-
-

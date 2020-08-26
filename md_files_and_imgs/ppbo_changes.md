@@ -20,7 +20,9 @@ path_from_root_to_files = os.getcwd() + '/PPBO/Camphor_Copper/'
 Other changes:
 
 - `ppbo_settings.py`
-    - `max_iter_fMAP_estimation` added as a parameter to `__init__` of `PPBO_settings` class
+    - Several parameters are added as a parameter to `__init__` of `PPBO_settings` class (and to GANPrefFinder):
+        - `max_iter_fMAP_estimation`
+        - `mu_star_finding_trials`
 
 
 
