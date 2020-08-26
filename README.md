@@ -38,7 +38,7 @@ Based on 2 projects:
 
 ## Original project info
 
-Currently, the code of both projects is commited to this repository. 
+Currently, the code of both projects is committed to this repository. 
 Later ganspace is going to be transformed into submodule. 
 PPBO will stay a part of this code since it was changed.
 

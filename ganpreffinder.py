@@ -32,7 +32,7 @@ class GANPrefFinder(object):
                  adaptive_init: bool = True,
                  adaptive_components: list = None,
                  acquisition_strategy: str = "PCD",          # PCD, EXP, EI
-                 ppbo_m: int = 25,                           # number of pseudo comparisons for GP fitting# number of pseudo comparisons for GP fitting
+                 ppbo_m: int = 25,                           # number of pseudo comparisons for GP fitting
                  ppbo_user_feedback_grid_size: int = 40,     # grid
                  ppbo_EI_EXR_mc_samples: int = 200,          # number of points for the integrals to solve
                  ppbo_EI_EXR_BO_maxiter: int = 30,           # max number of iterations for BO
@@ -44,31 +44,37 @@ class GANPrefFinder(object):
                  strength_right_bound: float = 30,
                  verbose: bool = True):
         """
-        :param model_name:
-        :param class_name:
-        :param layer_name:
+        :param model_name: GAN model
+            Possible models: ProGAN, BigGAN-512, BigGAN-256, BigGAN-128, StyleGAN, StyleGAN2
+        :param class_name: Dataset used to train GAN
+            Possible datasets: ffhq, car, cat, church, horse, bedrooms, kitchen, places
+        :param layer_name: style
         :param device:
-        :param n_comp:
-        :param n_comp_in_use:
-        :param comp_layers_dict: dictionary of the following view
+            Possible devices: cpu / cuda:0
+        :param n_comp: Number of components that PCA uses in GANSpace
+        :param n_comp_in_use: Number of components that is used (first n_comp_in_use out of n_comp)
+        :param comp_layers_dict: Dictionary with layers to which apply modification when add a particular component
+            Structure:
             {
                 0: (5,8),
                 2: (13,16),
                 ....
             }
-        :param adaptive_init:
-        :param adaptive_components:
+        :param adaptive_init: Adaptive initialization flag
+        :param adaptive_components: Components to which apply modifications when adaptive_components is True
         :param acquisition_strategy:
-        :param ppbo_m:
-        :param ppbo_user_feedback_grid_size:
-        :param ppbo_EI_EXR_mc_samples:
-        :param ppbo_EI_EXR_BO_maxiter:
+            Explored options: PCD, EXP, EI
+        :param ppbo_m: Number of pseudo comparisons for GP fitting
+        :param ppbo_user_feedback_grid_size: Grid for slider
+        :param ppbo_EI_EXR_mc_samples: Number of points for the integrals to solve (mc)
+        :param ppbo_EI_EXR_BO_maxiter: Max number of iterations for BO
         :param ppbo_max_iter_fMAP_estimation:
-        :param gan_sample_seed:
-        :param gan_sample_zero_w:
-        :param strength_left_bound:
-        :param strength_right_bound:
-        :param verbose:
+        :param ppbo_mu_star_finding_trials:
+        :param gan_sample_seed: Random seed for GAN
+        :param gan_sample_zero_w: Use w as a vector of zeros
+        :param strength_left_bound: Left bound for strength slider
+        :param strength_right_bound: Right bound for strength slider
+        :param verbose: Verbose flag
         """
 
         self.verbose = verbose
