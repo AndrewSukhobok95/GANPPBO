@@ -91,10 +91,10 @@ class GPModel:
             self.set_theta() 
         self.update_Sigma(self.theta)
         self.update_Sigma_inv(self.theta)
-        self.update_f_MAP()
+        self.update_f_MAP(random_initialvalue=True)
         if optimize_theta:
             self.optimize_theta()
-            self.update_f_MAP(random_initialvalue=False) #is random_initialvalue necessary?
+            self.update_f_MAP(random_initialvalue=True) #is random_initialvalue necessary?
             self.update_Sigma(self.theta)
             self.update_Sigma_inv(self.theta)
         if self.verbose: print("Current theta is: " + str(self.theta) + ' (Acq. = ' +str(self.xi_acquisition_function)+')')
