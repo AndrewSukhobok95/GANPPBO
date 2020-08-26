@@ -109,6 +109,7 @@ class GANSpaceModel(object):
         else:
             w_list = [w] * self.n_layers
             for l in range(layers_range[0], layers_range[1]+1):
+                print("APPLY LAYER", l)
                 w_list[l] = w_list[l] + lat_modification
         img = self.gan_model.sample_np(w_list)
         return w, img
