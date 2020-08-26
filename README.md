@@ -32,8 +32,9 @@ Based on 2 projects:
 1. Install anaconda or miniconda
 2. Create environment: `conda create -n ganppbo python=3.7`
 3. Activate environment: `conda activate ganppbo`
-4. Install dependencies: `conda env update -f environment.yml --prune`
-5. Activate widget extension: `jupyter nbextension enable --py widgetsnbextension`
+4. Open project directory: `cd GANPPBO`
+5. Install dependencies: `conda env update -f environment.yml --prune`
+6. Activate widget extension: `jupyter nbextension enable --py widgetsnbextension`
 
 ## Original project info
 
