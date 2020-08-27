@@ -2,17 +2,6 @@
 
 
 
-### Current Problems
-
-Too tiny modifications after turning off adaptive initialization.
-
-Solutions:
-
-1) Decrease number of components and boundaries
-2) If (1) step doesn't work, use `GPModel.optimize_theta()`
-3) Try to change `max_iter_fMAP_estimation` parameter to 5000 (default is 500) in PPBO settings.
-
-
 ## Idea
 
 Probabilistic Interactive User Model for Interactive AI
