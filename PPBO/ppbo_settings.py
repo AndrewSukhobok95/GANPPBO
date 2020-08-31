@@ -1,5 +1,3 @@
-
-
 class PPBO_settings:
     """
     Class that specifies the settings for Projective Preferential Bayesian Optimization
@@ -9,14 +7,14 @@ class PPBO_settings:
                  D,
                  bounds,
                  xi_acquisition_function,
-                 theta_initial=[0.001,20,0.001],
+                 theta_initial=[0.01,1,0.01],
                  user_feedback_grid_size=100,    # grid
-                 m=20,                           # number of pseudo comparisons for GP fitting
-                 verbose=False,
-                 EI_EXR_mc_samples=200,          # number of points for the integrals to solve
-                 EI_EXR_BO_maxiter=30,
-                 max_iter_fMAP_estimation=500,   # max number of iterations for BO
-                 mu_star_finding_trials=1):
+                 m=18,                           # number of pseudo comparisons for GP fitting
+                 verbose=True,
+                 EI_EXR_mc_samples=150,          # number of points for the integrals to solve
+                 EI_EXR_BO_maxiter=20,
+                 max_iter_fMAP_estimation=5000,   # max number of iterations for BO
+                 mu_star_finding_trials=4):          # max number of iterations for BO
         
         """
         BASIC SETTINGS
@@ -32,7 +30,7 @@ class PPBO_settings:
         self.original_bounds = bounds   #((xmin,xmax),)*self.D #Boundaries of each variables as a sequence of tuplets
         
         """
-        SETTINGS FOR THE OPTIMIZERS
+        SETTINGS FOR THE OPTIMIZERS 
         """
         self.max_iter_fMAP_estimation = max_iter_fMAP_estimation
         self.fMAP_optimizer = 'trust-exact'   #scipy optimizer for f_MAP-estimation: trust-krylov or trust-exact
@@ -43,17 +41,17 @@ class PPBO_settings:
        
         ''' PSEUDO-OBSERVATIONS '''
         self.n_pseudoobservations = m  #How many pseudoobservations. Note that Sigma condition number grows w.r.t. that!
-        self.alpha_grid_distribution = 'TGN'   #evenly, cauchy or TGN (truncated generalized normal distribution)
-        self.TGN_speed = 0.4 #a speed of transformation from uniform dist to normal dist if TGN is selected,  0.3-0.4
+        self.alpha_grid_distribution = 'evenly'   #evenly, cauchy or TGN (truncated generalized normal distribution)
+        self.TGN_speed = 0.08 #a speed of transformation from uniform dist to normal dist if TGN is selected,  0.3-0.4
         
         ''' ACQUISITION STRATEGY '''
         #PCD,EI,EXT,EXR, or RAND:
         self.xi_acquisition_function = xi_acquisition_function         
-        if self.xi_acquisition_function == "EI" or self.xi_acquisition_function == "EXR":
+        if self.xi_acquisition_function == "EI" or self.xi_acquisition_function == "EXR" or self.xi_acquisition_function == "EI_fixed_x":
             self.x_acquisition_function = 'none'
             #Initial nonzero dimensions of xi
-            self.xi_dims_prev_iter = list(range(self.D - 1))
-            #self.xi_dims_prev_iter = [0,1]
+            #self.xi_dims_prev_iter = list(range(self.D - 1))
+            self.xi_dims_prev_iter = [0,1]
             self.mc_samples = EI_EXR_mc_samples
             self.BO_maxiter = EI_EXR_BO_maxiter        
         elif self.xi_acquisition_function == "PCD" or self.xi_acquisition_function == "EXT" :
@@ -66,6 +64,3 @@ class PPBO_settings:
             
         '''Want override x_acquisition strategy? '''
         #self.x_acquisition_function = 'xxx'
-
-
-

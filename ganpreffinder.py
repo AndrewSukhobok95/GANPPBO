@@ -31,11 +31,11 @@ class GANPrefFinder(object):
                  comp_layers_dict: dict = None,
                  adaptive_init: bool = True,
                  adaptive_components: list = None,
-                 acquisition_strategy: str = "PCD",          # PCD, EXP, EI
-                 ppbo_m: int = 25,                           # number of pseudo comparisons for GP fitting
+                 acquisition_strategy: str = "EI_fixed_x",   # PCD, EXP, EI, EI_fixed_x
+                 ppbo_m: int = 18,                           # number of pseudo comparisons for GP fitting
                  ppbo_user_feedback_grid_size: int = 40,     # grid
-                 ppbo_EI_EXR_mc_samples: int = 200,          # number of points for the integrals to solve
-                 ppbo_EI_EXR_BO_maxiter: int = 30,           # max number of iterations for BO
+                 ppbo_EI_EXR_mc_samples: int = 150,          # number of points for the integrals to solve
+                 ppbo_EI_EXR_BO_maxiter: int = 20,           # max number of iterations for BO
                  ppbo_max_iter_fMAP_estimation: int = 5000,
                  ppbo_mu_star_finding_trials: int = 4,
                  gan_sample_seed: int = None,
@@ -63,7 +63,7 @@ class GANPrefFinder(object):
         :param adaptive_init: Adaptive initialization flag
         :param adaptive_components: Components to which apply modifications when adaptive_components is True
         :param acquisition_strategy:
-            Explored options: PCD, EXP, EI
+            Explored options: PCD, EXP, EI, EI_fixed_x
         :param ppbo_m: Number of pseudo comparisons for GP fitting
         :param ppbo_user_feedback_grid_size: Grid for slider
         :param ppbo_EI_EXR_mc_samples: Number of points for the integrals to solve (mc)
