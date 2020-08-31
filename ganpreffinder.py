@@ -55,6 +55,7 @@ class GANPrefFinder(object):
         :param n_comp_in_use: Number of components that is used (first n_comp_in_use out of n_comp)
         :param comp_layers_dict: Dictionary with layers to which apply modification when add a particular component
             Structure:
+            component: (start layer, end layer)
             {
                 0: (5,8),
                 2: (13,16),
