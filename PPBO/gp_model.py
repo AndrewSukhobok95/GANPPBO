@@ -3,24 +3,15 @@ from feedback_processing import FeedbackProcessing
 import numpy as np
 import scipy
 import scipy.stats
-#import sklearn #covariance.shrunk_covariance
-#import sklearn.covariance
-################## These modules need to be imported for creating a stand-alone version of the script #################
-#import sklearn.utils._cython_blas
-#import sklearn.neighbors.typedefs
-#import sklearn.neighbors.quad_tree
-#import sklearn.tree
-#import sklearn.tree._utils
-#######################
+
 from scipy.special import ndtr as std_normal_cdf #scipy.special.ndtr fast numerical integration for standard normal cdf
 from scipy.integrate import quad as integrate  #numerical integration
 from GPyOpt.methods import BayesianOptimization #Use as global optimizer e.g. fro evidence maximization
-########################################################################################################################
+
 from itertools import chain #To unlist lists of lists
 import time
 
 from misc import inverse, is_positive_definite, pd_inverse, std_normal_pdf, var2_normal_pdf, pseudo_det, det, regularize_covariance
-
 
 
 class GPModel:
@@ -29,7 +20,7 @@ class GPModel:
     Some methods are not inherited but composited from Feedback_Processing class
     """
     
-    COVARIANCE_SHRINKAGE = 1e-4 #An amount of shrinkage applied to Sigma
+    COVARIANCE_SHRINKAGE = 5e-2 #An amount of shrinkage applied to Sigma
     #Something between 1e-5 - 1e-1 depending how far off are hyperparameter values (low value induces more accurate estimates but is numerically more unstable)
 
 
@@ -55,6 +46,7 @@ class GPModel:
         self.n_gausshermite_sample_points = PPBO_settings.n_gausshermite_sample_points
         self.xi_acquisition_function = PPBO_settings.xi_acquisition_function
   
+        self.kernel = self.RQ_kernel #Kernel type: SE-kernel or RQ-kernel
         self.theta_initial = PPBO_settings.theta_initial
         self.theta = None #Most optimized theta
         self.Sigma = None
@@ -105,7 +97,7 @@ class GPModel:
         if self.verbose: print("Updating posterior covariance...")
         start = time.time()
         try:
-            self.posterior_covariance_inv = self.Sigma_inv - self.Lambda_MAP
+            self.posterior_covariance_inv = self.Sigma_inv - self.Lambda_MAP #self.Sigma_inv + self.Lambda_MAP
             self.posterior_covariance = pd_inverse(self.posterior_covariance_inv)
         except:
             print('---!!!--- Posterior covariance matrix is not PSD ---!!!---')
@@ -127,8 +119,23 @@ class GPModel:
         sigma_f = theta[2]
         if l <=0 or sigma_f <= 0:
             print("Check hyperparameter values!")
-        sqdist = np.sum(X1**2, 1).reshape(-1, 1) + np.sum(X2**2, 1) - 2 * np.dot(X1, X2.T)
-        return sigma_f**2 * np.exp(-(1/2*l)*sqdist)
+        X1sq = np.sum(np.square(X1),1)
+        X2sq = np.sum(np.square(X2),1)
+        sqdist = -2.*np.dot(X1, X2.T) + (X1sq[:,None] + X2sq[None,:])
+        sqdist = np.clip(sqdist, 0, np.inf)
+        return sigma_f**2 * np.exp(-0.5*sqdist/(l**2))
+    @staticmethod
+    def RQ_kernel(X1, X2, theta):
+        alpha = 2
+        l = theta[1]
+        sigma_f = theta[2]
+        if l <=0 or sigma_f <= 0:
+            print("Check hyperparameter values!")
+        X1sq = np.sum(np.square(X1),1)
+        X2sq = np.sum(np.square(X2),1)
+        sqdist = -2.*np.dot(X1, X2.T) + (X1sq[:,None] + X2sq[None,:])
+        sqdist = np.clip(sqdist, 0, np.inf)
+        return sigma_f**2 * (1+sqdist/(2*alpha*l**2))**(-alpha)
 
     @staticmethod
     def create_Gramian(X1,X2,kernel,*args): 
@@ -143,7 +150,7 @@ class GPModel:
         return Sigma
 
     def update_Sigma(self,theta):
-        self.Sigma = self.create_Gramian(self.X,self.X,self.SE_kernel,theta)
+        self.Sigma = self.create_Gramian(self.X,self.X,self.kernel,theta)
         #print("The condition number of the covariance matrix: " + str(np.linalg.cond(self.Sigma,p=np.inf))) #condition number of A = ||A||*||A^-1||, where the norm ||.|| is the maximum absolute row sum  (since p =np.inf)
         
     def update_Sigma_inv(self,theta): 
@@ -152,11 +159,11 @@ class GPModel:
     def set_theta(self):
         self.theta = self.theta_initial
         if self.theta[1] is None:
-            self.theta[1] = 10
+            self.theta[1] = 1
         if self.theta[2] is None:
-            self.theta[2] = 0.001
+            self.theta[2] = 0.01
         if self.theta[0] is None:
-            self.theta[0] = 0.001  #if too low, then zeros encountered in sigmas.... but too much noise leads to very inaccurate estimates mu_star, etc...!!!
+            self.theta[0] = 0.01  #if too low, then zeros encountered in sigmas.... but too much noise leads to very inaccurate estimates mu_star, etc...!!!
     
     ''' --- Functional T --- '''
     
@@ -265,11 +272,12 @@ class GPModel:
     
     def evidence(self,theta,f_initial):
         print('---------- Iter results ----------------')
-        Sigma_ = self.create_Gramian(self.X,self.X,self.SE_kernel,theta)
+        Sigma_ = self.create_Gramian(self.X,self.X,self.kernel,theta)
         Sigma_inv_ = pd_inverse(Sigma_)
+        f_initial = np.random.multivariate_normal([0]*self.N, self.Sigma).reshape(self.N,1)
         f_MAP_ = scipy.optimize.minimize(lambda f: -self.T(f,theta,Sigma_inv_), f_initial, method='trust-exact',
                        jac=lambda f: -self.T_grad(f,theta,Sigma_inv_), hess=lambda f: -self.T_hessian(f,theta,Sigma_inv_),
-                       options={'disp': False,'maxiter': 200}).x
+                       options={'disp': False,'maxiter': 500}).x
         Lambda_MAP = self.create_Lambda(f_MAP_,theta[0])
     
         ''' A straightforward numerically unstable implementation '''
@@ -282,7 +290,7 @@ class GPModel:
         
         ''' A numerically stable implementation based on Cholesky-decomposition '''
         try:
-            posterior_covariance_inv = Sigma_inv_ - Lambda_MAP
+            posterior_covariance_inv = Sigma_inv_ - Lambda_MAP #Sigma_inv_ + Lambda_MAP
             posterior_covariance = pd_inverse(posterior_covariance_inv)
             L = np.linalg.cholesky(posterior_covariance)
             log_determinant = 2*np.sum(np.log(np.diag(L)))
@@ -293,7 +301,7 @@ class GPModel:
             return log_evidence
         except:
             print('Theta = ' +str(theta) + ' gave a non-PSD covariance matrix.')
-            return -1e-3
+            return -1e+4
 
     ''' --- Optimizations --- '''
     
@@ -328,15 +336,15 @@ class GPModel:
         #BayesianOptimization
         #Higher lengthscale generates more accurate GP mean (and location of maximizer of mean)
         #However, higher lengthscale also generates less accurate argmax distribution (argmax samples are widepread)   
-        ''' Bounds for hyperparameters given that COVARIANCE_SHRINKAGE = 1e-4 '''
-        bounds = [{'name': 'sigma', 'type': 'continuous', 'domain': (1e-3,2e-3)}, #Too low noise gives non-PSD covariance matrix
-                   {'name': 'leghtscale', 'type': 'continuous', 'domain': (5,100)}, #D high ---> l low
-                   {'name': 'sigma_l', 'type': 'continuous', 'domain': (1e-3,2e-3)}] # since f is a utility function this parameter make no much sense. 
+        ''' Bounds for hyperparameters '''
+        bounds = [{'name': 'sigma', 'type': 'continuous', 'domain': (5e-3,1e-1)}, #Too low noise gives non-PSD covariance matrix
+                   {'name': 'leghtscale', 'type': 'continuous', 'domain': (0.1,1)}, #Theoretical l max: 4*np.sqrt(self.D)
+                   {'name': 'sigma_l', 'type': 'continuous', 'domain': (5e-3,1e-1)}] # since f is a utility function this parameter make no much sense. 
         BO = BayesianOptimization(lambda theta: -self.evidence(theta[0],self.f_MAP), #theta[0] since need to unnest list one level
                                   domain=bounds,
-                                  optimize_restarts = 1,
+                                  optimize_restarts = 0,
                                   normalize_Y=True)
-        BO.run_optimization(max_iter = 30)
+        BO.run_optimization(max_iter = 100)
         if self.verbose: print('Optimization of hyper-parameters took ' + str(time.time()-start) + ' seconds.')
         self.theta = BO.x_opt
         if self.verbose: print("The resulting theta is "+ str(self.theta))
@@ -362,10 +370,10 @@ class GPModel:
     def mu_Sigma_pred(self,X_pred):
         ''' Predictive posterior means and covariances '''
         #mean
-        k_pred = self.create_Gramian_nonsquare(self.X,X_pred,self.SE_kernel,self.theta)
+        k_pred = self.create_Gramian_nonsquare(self.X,X_pred,self.kernel,self.theta)
         mu_pred = k_pred.T.dot(self.Sigma_inv).dot(self.f_MAP)
         #covariance
-        Sigma_testloc = self.create_Gramian(X_pred,X_pred,self.SE_kernel,self.theta)            
+        Sigma_testloc = self.create_Gramian(X_pred,X_pred,self.kernel,self.theta)            
         '''Alternative formula that exploits posterior covariance (this seems to work) '''
         A = self.Sigma_inv - self.Sigma_inv.dot(self.posterior_covariance).dot(self.Sigma_inv) 
         Sigma_pred = Sigma_testloc - k_pred.T.dot(A).dot(k_pred)
@@ -374,12 +382,9 @@ class GPModel:
     
     def mu_pred(self,X_pred):
         ''' Predict posterior mean for SINGLE vector: needed for optimizers '''
-        k_pred = self.create_Gramian_nonsquare(self.X,X_pred.reshape(1,self.D),self.SE_kernel,self.theta)
+        k_pred = self.create_Gramian_nonsquare(self.X,X_pred.reshape(1,self.D),self.kernel,self.theta)
         mu_pred = k_pred.T.dot(self.Sigma_inv).dot(self.f_MAP)
         return float(mu_pred)
     
     def mu_pred_neq(self,X_pred):   
         return -self.mu_pred(X_pred)
-    
-
-
