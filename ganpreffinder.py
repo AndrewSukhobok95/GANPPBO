@@ -10,9 +10,9 @@ GAN_DIR = os.path.join(PROJECTDIR, "ganspace")
 sys.path.insert(0, PPBO_DIR)
 sys.path.insert(0, GAN_DIR)
 
-from PPBO.gp_model import GPModel
-from PPBO.ppbo_settings import PPBO_settings
-from PPBO.acquisition import next_query
+from base_modules import GPModel
+from base_modules import PPBO_settings
+from base_modules import next_query
 
 from wrap_utils.ppbo_utils.feedback_storage import FeedbackStore
 from wrap_utils.ppbo_utils.adaptive_query import AdaptiveQuery
