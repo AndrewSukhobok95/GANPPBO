@@ -4,10 +4,8 @@ import numpy as np
 import torch
 
 PROJECTDIR = os.getcwd()
-PPBO_DIR = os.path.join(PROJECTDIR, "PPBO")
-GAN_DIR = os.path.join(PROJECTDIR, "ganspace")
 
-sys.path.insert(0, PPBO_DIR)
+GAN_DIR = os.path.join(PROJECTDIR, "ganspace")
 sys.path.insert(0, GAN_DIR)
 
 from base_modules import GPModel
@@ -112,7 +110,7 @@ class GANPrefFinder(object):
             EI_EXR_mc_samples=ppbo_EI_EXR_mc_samples,
             EI_EXR_BO_maxiter=ppbo_EI_EXR_BO_maxiter,
             max_iter_fMAP_estimation=ppbo_max_iter_fMAP_estimation,
-            mu_star_finding_trials=ppbo_mu_star_finding_trials,
+            mustar_finding_trials=ppbo_mu_star_finding_trials,
             verbose=False)
 
         self.GP_model = GPModel(self.PPBOsettings)

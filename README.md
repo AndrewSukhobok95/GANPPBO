@@ -28,9 +28,8 @@ Based on 2 projects:
 
 ## Original project info
 
-Currently, the code of both projects is committed to this repository. 
-Later ganspace is going to be transformed into submodule. 
-PPBO will stay a part of this code since it was changed.
+Currently, the code of ganspace projects is committed to this repository. 
+Later ganspace is going to be transformed into submodule.
 
 Original repositories:
 - https://github.com/harskish/ganspace
@@ -38,10 +37,8 @@ Original repositories:
 
 Origial README files:
 - [GANSpace README file](ganspace/README.md)
-- [PPBO README file](PPBO/README.md)
+- [PPBO README file](base_modules/PPBO/README.md)
 
-Additional info:
-- [Changes performed to PPBO project](md_files_and_imgs/ppbo_changes.md)
 
 
 
