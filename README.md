@@ -23,10 +23,7 @@ Based on 2 projects:
 3. Activate environment: `conda activate ganppbo`
 4. Open project directory: `cd GANPPBO`
 5. Install dependencies: `conda env update -f environment.yml --prune`
-6. Setup submodules:
-    - BE CAREFUL WITH THIS STEP: There are 2 ways of preforming it
-    1. (Preferred one) `git submodule init` - You will copy the code of PPBO from the last commit assigned to GANPPBO repository
-    2. `git submodule update --init --recursive` - You will switch to the last commit of PPBO code and then copy it to GANPPBO 
+6. Setup submodules: `git submodule update --init --recursive`
 7. Activate widget extension: `jupyter nbextension enable --py widgetsnbextension`
 
 ## Original project info
