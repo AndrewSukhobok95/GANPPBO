@@ -3,7 +3,7 @@
 **/.idea
 **/.ipynb_checkpoints/
 **/.DS_Store
-ganspace/cache/
-ganspace/out/
-ganspace/models/checkpoints/
-ganspace/checkpoints/
+base_modules/ganspace/cache/
+base_modules/ganspace/out/
+base_modules/ganspace/models/checkpoints/
+base_modules/ganspace/checkpoints/

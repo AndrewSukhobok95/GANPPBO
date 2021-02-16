@@ -12,7 +12,11 @@ class AdaptiveQuery(object):
         if components_to_query is None:
             self.init_Xi_queries = ppbo_utils.adaptive_init_Xi_iterator(self.N_comp_in_use)
         else:
-            self.init_Xi_queries = ppbo_utils.adaptive_init_Xi_iterator_def_comp(self.N_comp_in_use, components_to_query)
+            _components_to_query = components_to_query.copy()
+            for _c in components_to_query:
+                if (_c >= self.N_comp_in_use) or (_c < 0):
+                    _components_to_query.remove(_c)
+            self.init_Xi_queries = ppbo_utils.adaptive_init_Xi_iterator_def_comp(self.N_comp_in_use, _components_to_query)
         self.adaptiveX = np.zeros(self.N_comp_in_use)
 
     def next_Xi(self):

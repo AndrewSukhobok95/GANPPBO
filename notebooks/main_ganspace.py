@@ -6,12 +6,12 @@ import os
 import sys
 
 PROJECTDIR = os.getcwd()
-GAN_DIR = os.path.join(PROJECTDIR, "../ganspace")
+GAN_DIR = os.path.join(PROJECTDIR, "../base_modules/ganspace")
 sys.path.insert(0, GAN_DIR)
 
-from ganspace.config import Config
-from ganspace.models import get_instrumented_model
-from ganspace.decomposition import get_or_compute
+from base_modules.ganspace.config import Config
+from base_modules.ganspace.models import get_instrumented_model
+from base_modules.ganspace.decomposition import get_or_compute
 
 
 

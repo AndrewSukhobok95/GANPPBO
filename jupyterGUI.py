@@ -2,7 +2,7 @@ import sys
 import os
 
 PROJECTDIR = os.getcwd()
-GAN_DIR = os.path.join(PROJECTDIR, "ganspace")
+GAN_DIR = os.path.join(PROJECTDIR, "base_modules/ganspace")
 sys.path.insert(0, GAN_DIR)
 
 import numpy as np

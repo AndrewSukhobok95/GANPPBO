@@ -1,10 +1,8 @@
 import torch
 import numpy as np
-from pathlib import Path
-from PIL import Image
 import os
 import sys
-from typing import List, Tuple
+from typing import Tuple
 
 if __name__ == "__main__":
     PROJECTDIR = os.path.normpath(os.path.join(os.getcwd(), "../../"))
@@ -12,9 +10,9 @@ if __name__ == "__main__":
     sys.path.insert(0, GAN_DIR)
     sys.path.insert(0, PROJECTDIR)
 
-from ganspace.config import Config
-from ganspace.models import get_instrumented_model
-from ganspace.decomposition import get_or_compute
+from base_modules.ganspace.config import Config
+from base_modules.ganspace.models import get_instrumented_model
+from base_modules.ganspace.decomposition import get_or_compute
 
 
 class GANSpaceModel(object):
@@ -24,7 +22,8 @@ class GANSpaceModel(object):
                  layer_name: str = 'style',
                  device: str = "cpu",
                  n_comp: int = 80,
-                 comp_range: Tuple[int, int] = None):
+                 comp_range: Tuple[int, int] = None,
+                 comp_list: list = None):
 
         torch.autograd.set_grad_enabled(False)
 
@@ -58,16 +57,21 @@ class GANSpaceModel(object):
             self.lat_mean = data['lat_mean']
             self.lat_std = data['lat_stdev']
 
-        if comp_range is None:
-            comp_range = (0, self.n_comp)
-        else:
+        if comp_range is not None:
             if comp_range[0] < 0:
                 raise ValueError("The number of components should be positive number.")
             if comp_range[1] > self.n_comp:
                 raise ValueError("You can't choose more components then", n_comp)
-
-        lcb, rcb = comp_range[0], comp_range[1]
-        self.V = self.lat_comp[lcb:rcb, 0, :]
+            lcb, rcb = comp_range[0], comp_range[1]
+            self.V = self.lat_comp[lcb:rcb, 0, :]
+        elif comp_list is not None:
+            for _c in comp_list:
+                if (_c<0) or (_c>self.n_comp-1):
+                    raise ValueError("All component indices must be in the range from 0 to n_comp, "
+                                     "but index {} was found".format(_c))
+            self.V = self.lat_comp[comp_list, 0, :]
+        else:
+            self.V = self.lat_comp[0:self.n_comp, 0, :]
 
     def sample_image(self,
                      seed: int = None,

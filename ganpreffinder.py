@@ -5,7 +5,7 @@ import torch
 
 PROJECTDIR = os.getcwd()
 
-GAN_DIR = os.path.join(PROJECTDIR, "ganspace")
+GAN_DIR = os.path.join(PROJECTDIR, "base_modules/ganspace")
 sys.path.insert(0, GAN_DIR)
 
 from base_modules import GPModel
@@ -26,6 +26,7 @@ class GANPrefFinder(object):
                  device: str = "cpu",
                  n_comp: int = 80,
                  n_comp_in_use: int = None,
+                 comp_to_use: list = None,
                  comp_layers_dict: dict = None,
                  adaptive_init: bool = True,
                  adaptive_components: list = None,
@@ -81,7 +82,7 @@ class GANPrefFinder(object):
 
         self.USING_CUDA = "cuda" in device
 
-        self.ACQUISITION_STRATEGY = acquisition_strategy  # PCD EI
+        self.ACQUISITION_STRATEGY = acquisition_strategy
         self.ADAPTIVE_INITIALIZATION = adaptive_init
         # self.OPTIMIZE_HYPERPARAMETERS_AFTER_INITIALIZATION = False
         # self.OPTIMIZE_HYPERPARAMETERS_AFTER_EACH_ITERATION = False
@@ -89,14 +90,19 @@ class GANPrefFinder(object):
 
         self.comp_layers_dict = comp_layers_dict
 
-        if n_comp_in_use is None:
-            self.N_comp_in_use = n_comp
-        else:
+        if n_comp_in_use is not None:
             self.N_comp_in_use = n_comp_in_use
-        comp_range = (0, self.N_comp_in_use)
-        self.GANsm = GANSpaceModel(model_name, class_name, layer_name, device, n_comp, comp_range)
-        self.init_W, self.init_img = self.GANsm.sample_image(seed=gan_sample_seed,
-                                                             zero_w=gan_sample_zero_w)
+            comp_range = (0, self.N_comp_in_use)
+        elif comp_to_use is not None:
+            self.N_comp_in_use = len(comp_to_use)
+            comp_range = None
+        else:
+            self.N_comp_in_use = n_comp
+            comp_range = (0, self.N_comp_in_use)
+
+        self.GANsm = GANSpaceModel(model_name, class_name, layer_name, device, n_comp,
+                                   comp_range=comp_range, comp_list=comp_to_use)
+        self.init_W, self.init_img = self.GANsm.sample_image(seed=gan_sample_seed, zero_w=gan_sample_zero_w)
 
         self.left_bound = strength_left_bound
         self.right_bound = strength_right_bound
@@ -116,6 +122,7 @@ class GANPrefFinder(object):
         self.GP_model = GPModel(self.PPBOsettings)
 
         self.fs_ses = FeedbackStore(D=self.N_comp_in_use)
+
         self.AQ = AdaptiveQuery(n_comp_in_use=self.N_comp_in_use,
                                 components_to_query=adaptive_components)
 

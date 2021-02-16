@@ -36,7 +36,7 @@ Original repositories:
 - https://github.com/AaltoPML/PPBO
 
 Origial README files:
-- [GANSpace README file](ganspace/README.md)
+- [GANSpace README file](base_modules/ganspace/README.md)
 - [PPBO README file](base_modules/PPBO/README.md)
 
 
