@@ -29,7 +29,7 @@ class GANPrefFinder(object):
                  comp_layers_dict: dict = None,
                  adaptive_init: bool = True,
                  adaptive_components: list = None,
-                 acquisition_strategy: str = "EI_fixed_x",   # PCD, EXP, EI, EI_fixed_x
+                 acquisition_strategy: str = "PCD",   # PCD, EXP, EI, EI_fixed_x
                  ppbo_m: int = 18,                           # number of pseudo comparisons for GP fitting
                  ppbo_user_feedback_grid_size: int = 40,     # grid
                  ppbo_EI_EXR_mc_samples: int = 150,          # number of points for the integrals to solve
@@ -106,10 +106,10 @@ class GANPrefFinder(object):
             bounds=ppbo_utils.get_bounds(self.N_comp_in_use, self.left_bound, self.right_bound),
             xi_acquisition_function=self.ACQUISITION_STRATEGY,
             m=ppbo_m,
+            theta_initial=[0.01,0.5,0.1],
             user_feedback_grid_size=ppbo_user_feedback_grid_size,
             EI_EXR_mc_samples=ppbo_EI_EXR_mc_samples,
             EI_EXR_BO_maxiter=ppbo_EI_EXR_BO_maxiter,
-            max_iter_fMAP_estimation=ppbo_max_iter_fMAP_estimation,
             mustar_finding_trials=ppbo_mu_star_finding_trials,
             verbose=False)
 
@@ -190,8 +190,8 @@ class GANPrefFinder(object):
         self.GP_model.update_data()
         self.GP_model.update_model()
 
-        self.x_star_hist.append(self.GP_model.x_star_)
-        self.mu_star_hist.append(self.GP_model.mu_star_)
+        self.x_star_hist.append(self.GP_model.xstar)
+        self.mu_star_hist.append(self.GP_model.mustar)
 
     def optimizeGP(self):
         self.GP_model.optimize_theta()
