@@ -76,7 +76,6 @@ class GANPrefFinder(object):
         :param strength_right_bound: Right bound for strength slider
         :param verbose: Verbose flag
         """
-
         self.verbose = verbose
         self.verbose_endl = "   "
 
@@ -123,8 +122,17 @@ class GANPrefFinder(object):
 
         self.fs_ses = FeedbackStore(D=self.N_comp_in_use)
 
+        adaptive_comp_correspondance = []
+        if comp_to_use is not None:
+            for _c in comp_to_use:
+                if _c in adaptive_components:
+                    adaptive_comp_correspondance.append(comp_to_use.index(_c))
+        else:
+            for _i in range(self.N_comp_in_use):
+                if _i in adaptive_components:
+                    adaptive_comp_correspondance.append(_i)
         self.AQ = AdaptiveQuery(n_comp_in_use=self.N_comp_in_use,
-                                components_to_query=adaptive_components)
+                                components_to_query=adaptive_comp_correspondance)
 
         self.x_star_hist = []
         self.mu_star_hist = []
