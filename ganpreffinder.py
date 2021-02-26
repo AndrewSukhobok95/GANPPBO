@@ -11,6 +11,7 @@ sys.path.insert(0, GAN_DIR)
 from base_modules import GPModel
 from base_modules import PPBO_settings
 from base_modules import next_query
+from base_modules import Hsampler
 
 from wrap_utils.ppbo_utils.feedback_storage import FeedbackStore
 from wrap_utils.ppbo_utils.adaptive_query import AdaptiveQuery
@@ -39,8 +40,10 @@ class GANPrefFinder(object):
                  ppbo_mu_star_finding_trials: int = 4,
                  gan_sample_seed: int = None,
                  gan_sample_zero_w: bool = False,
-                 strength_left_bound: float = -30,
-                 strength_right_bound: float = 30,
+                 strength_left_bound: float = -20,
+                 strength_right_bound: float = 20,
+                 skip_computations_during_initialization: bool = False,
+                 skip_xstaroptimization_during_initialization: bool = False,
                  verbose: bool = True):
         """
         :param model_name: GAN model
@@ -111,11 +114,13 @@ class GANPrefFinder(object):
             bounds=ppbo_utils.get_bounds(self.N_comp_in_use, self.left_bound, self.right_bound),
             xi_acquisition_function=self.ACQUISITION_STRATEGY,
             m=ppbo_m,
-            theta_initial=[0.01,0.5,0.1],
+            theta_initial=[0.001,0.26,0.1],#[0.001,0.26,0.1]
             user_feedback_grid_size=ppbo_user_feedback_grid_size,
             EI_EXR_mc_samples=ppbo_EI_EXR_mc_samples,
             EI_EXR_BO_maxiter=ppbo_EI_EXR_BO_maxiter,
             mustar_finding_trials=ppbo_mu_star_finding_trials,
+            skip_computations_during_initialization=skip_computations_during_initialization,
+            skip_xstaroptimization_during_initialization=skip_xstaroptimization_during_initialization,
             verbose=False)
 
         self.GP_model = GPModel(self.PPBOsettings)
@@ -136,6 +141,8 @@ class GANPrefFinder(object):
 
         self.x_star_hist = []
         self.mu_star_hist = []
+        
+        self.h_sampler = None
 
     def get_init_W(self):
         return self.init_W
@@ -160,7 +167,7 @@ class GANPrefFinder(object):
             x = self.AQ.get_X()
             x[xi != 0] = 0
         else:
-            if self.verbose: print("BO query sampling", end=self.verbose_endl)
+            if self.verbose: print("Computing next query..", end=self.verbose_endl)
             nq_unscale = True
             xi, x = next_query(self.PPBOsettings, self.GP_model, unscale=nq_unscale)
         xi = np.abs(xi) / np.max(np.abs(xi))
@@ -215,7 +222,17 @@ class GANPrefFinder(object):
         if self.ADAPTIVE_INITIALIZATION:
             self.ADAPTIVE_INITIALIZATION = False
         else:
-            self.ADAPTIVE_INITIALIZATION = True
+            self.ADAPTIVE_INITIALIZATION = True      
+            
+    def prepare_random_Fourier_sampler(self,nFeatures=15):
+        self.h_sampler = Hsampler(gp_model=self.GP_model,nFeatures=nFeatures)
+        self.h_sampler.generate_basis()
+        self.h_sampler.update_phi_X()
+        self.h_sampler.update_omega_MAP()
+        self.h_sampler.update_covariancematrix()
+        
+    def sample_preferred_image(self):
+        return self.GP_model.FP.unscale(self.h_sampler.sample_xstar())
 
 
 if __name__ == "__main__":
